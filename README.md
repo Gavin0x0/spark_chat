@@ -10,7 +10,14 @@ flutter pub get
 
 ## 2. 配置密钥
 
-在 `TODO` 中配置密钥
+在根目录创建 `.env` 写入密钥
+
+```bash
+# APIKEY & APISECRET from https://console.xfyun.cn/services/bm3
+APPID='xxxxxxxx'
+APIKEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+APISECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+```
 
 ## 3. 运行
 
