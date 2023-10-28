@@ -1,0 +1,38 @@
+name: spark_chat
+description: A new Flutter project.
+
+# Prevent accidental publishing to pub.dev.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.4 <4.0.0'
+
+dependencies:
+  crypto: ^3.0.3
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.1.0
+  flutter_localizations:
+    sdk: flutter
+  get: ^4.6.6
+  intl: ^0.18.1
+  web_socket_channel: ^2.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Enable generation of localized Strings from arb files.
+  generate: true
+
+  assets:
+    # Add assets from the images directory to the application.
+    - assets/images/
+    - .env

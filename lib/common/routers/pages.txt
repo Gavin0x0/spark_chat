@@ -1,0 +1,9 @@
+
+      GetPage(
+        name: RouteNames.chat,
+        page: () => const ChatPage(),
+      ),
+      GetPage(
+        name: RouteNames.home,
+        page: () => const HomePage(),
+      ),
