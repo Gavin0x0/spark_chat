@@ -21,24 +21,29 @@ class ChatController extends GetxController {
 
   final messageOutputFocusNode = FocusNode();
 
-  String outputString = "";
-
   late final typeWriter = TypeWriter(
       target: messageOutputController,
       focusNode: messageOutputFocusNode,
-      speed: 10,
+      speed: 100,
       cursor: "_");
 
   // tap
   void handleSend() {
     hideKeyboard();
-    // final String message = messageInputController.text;
-    outputString = "";
-    createWs();
+    if (typeWriter.isBusy) {
+      Get.snackbar(
+        "Error",
+        "正在输入中，请稍后再试",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    typeWriter.initTypeWriter();
+    startOutput();
   }
 
-  /// 创建 ws 链接
-  void createWs() {
+  /// 开始输出
+  void startOutput() {
     String appId = dotenv.env['APPID'] ?? '';
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
@@ -58,29 +63,25 @@ class ChatController extends GetxController {
     ws.sink.add(jsonStr);
     ws.stream.listen(
       (event) {
-        // print("Got message 📩: \n$event");
         ChatResponse chatResponse = ChatResponse.fromJson(jsonDecode(event));
-        // print("Got message 📩: \n${chatResponse.toString()}");
         if (chatResponse.header.code != 0) {
           Get.snackbar(
             "Error",
             chatResponse.header.message,
             snackPosition: SnackPosition.BOTTOM,
           );
-          outputString = chatResponse.header.message;
-          typeWriter.setText(outputString);
+          typeWriter.addText(chatResponse.header.message);
         } else if (chatResponse.payload != null) {
           String eachResponse = "";
           for (var e in chatResponse.payload!.choices.text) {
             debugPrint("Got message 📩: \n${e.content}");
             eachResponse += e.content;
           }
-          outputString += eachResponse;
-          typeWriter.setText(outputString);
+          typeWriter.addText(eachResponse);
           if (chatResponse.payload!.usage != null) {
             debugPrint(
                 "🪙 Used tokens: ${chatResponse.payload!.usage!.totalTokens}");
-            typeWriter.finish();
+            typeWriter.inputFinished();
             state.tokenUsage += chatResponse.payload!.usage!.totalTokens;
           }
         }
@@ -110,7 +111,6 @@ class ChatController extends GetxController {
     super.onInit();
     // 生成用户id
     state.uid = DateTime.now().millisecondsSinceEpoch.toString();
-    // print("uid: ${state.uid}");
   }
 
   /// 在 onInit() 之后调用 1 帧。这是进入的理想场所

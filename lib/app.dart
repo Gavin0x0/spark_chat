@@ -68,8 +68,9 @@ class MyApp extends StatelessWidget {
       //     },
       //   );
       // },
-      initialRoute: RouteNames.home,
+      initialRoute: RouteNames.chat,
       getPages: RoutePages.list,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -92,7 +92,7 @@ class ChatPage extends GetView<ChatController> {
     return GetBuilder<ChatController>(
       builder: (_) {
         return Scaffold(
-          appBar: AppBar(title: const Text("New Chat")),
+          appBar: AppBar(title: const Text("Spark Chat")),
           body: SafeArea(
             child: _buildView(),
           ),

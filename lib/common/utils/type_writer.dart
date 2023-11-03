@@ -36,14 +36,18 @@ class TypeWriter {
   String _undisplayedText = "";
 
   /// 文字动画定时器
-  Timer _textTimer = Timer(Duration.zero, () {});
+  Timer _typeWriterTimer = Timer(Duration.zero, () {});
 
   /// 等待中光标动画定时器
-  Timer _cursorTimer = Timer(Duration.zero, () {});
+  Timer _cursorBlinkTimer = Timer(Duration.zero, () {});
+
+  bool get isBusy => _status != TypeWriterStatus.finish;
 
   bool get _isTyping => _status == TypeWriterStatus.running;
 
   bool get _nothingToType => _undisplayedText.isEmpty;
+
+  bool _gotTheLastChar = false;
 
   TypeWriter({
     required TextEditingController target,
@@ -56,37 +60,75 @@ class TypeWriter {
         _focusNode = focusNode,
         assert(speed >= 1 && speed <= 1000, "Speed must between 1-1000");
 
-  /// 设置文本
-  /// TODO 关于自动变速，当检测到输入词汇迅速累加的时候，可以适当自动调节输出速度，检测到剩余字符不再增加时，恢复预设速度
-  void setText(String text) {
-    if (_text.isEmpty) {
-      _text = text;
-      _undisplayedText = text;
-      _startType();
-      return;
-    }
-
-    /// 将传入的text与原始text进行比较，如果存在追加更新，则添加进未输出的文本
-    if (text.length > _text.length) {
-      final String newTextHead = text.substring(0, _text.length);
-      if (newTextHead == _text) {
-        final String newText = text.substring(_text.length);
-        _undisplayedText += newText;
-        _startType();
-      } else {
-        debugPrint("原始文本发生变化++");
-      }
-    } else {
-      debugPrint("原始文本发生变化--/==");
-    }
-    _text = text;
+  void initTypeWriter() {
+    _gotTheLastChar = false;
+    _turnToWaiting();
   }
 
-  /// 结束
-  /// FIXME 结束不是立即结束，而是等剩余的文本输出完毕后结束
-  void finish() {
-    _textTimer.cancel();
-    _cursorTimer.cancel();
+  /// 设置文本【完整文本】
+  // void setText(String text) {
+  //   if (_text.isEmpty) {
+  //     _text = text;
+  //     _undisplayedText = text;
+  //     _turnToRunning();
+  //     return;
+  //   }
+
+  //   /// 将传入的text与原始text进行比较，如果存在追加更新，则添加进未输出的文本
+  //   if (text.length > _text.length) {
+  //     final String newTextHead = text.substring(0, _text.length);
+  //     if (newTextHead == _text) {
+  //       final String newText = text.substring(_text.length);
+  //       _undisplayedText += newText;
+  //       _turnToRunning();
+  //     } else {
+  //       debugPrint("原始文本发生变化++");
+  //     }
+  //   } else {
+  //     debugPrint("原始文本发生变化--/==");
+  //   }
+  //   _text = text;
+  // }
+
+  /// 追加文本
+  void addText(String text) {
+    _text += text;
+    print("addText: $text");
+    _undisplayedText += text;
+    _turnToRunning();
+  }
+
+  /// 输入完了
+  void inputFinished() {
+    _gotTheLastChar = true;
+  }
+
+  /// 开始输出
+  void _turnToRunning() {
+    if (_isTyping) return;
+    _status = TypeWriterStatus.running;
+    _cursorBlinkTimer.cancel();
+    _typeOneChar();
+    _typeWriterTimer = Timer.periodic(
+      Duration(milliseconds: (1000 / _speed).round()),
+      (t) => _typeOneChar(),
+    );
+  }
+
+  /// 进入等待状态
+  void _turnToWaiting() {
+    _status = TypeWriterStatus.waiting;
+    _typeWriterTimer.cancel();
+    _cursorBlink();
+    _cursorBlinkTimer = Timer.periodic(
+      Duration(milliseconds: (300).round()),
+      (t) => _cursorBlink(),
+    );
+  }
+
+  void _turnToFinish() {
+    _typeWriterTimer.cancel();
+    _cursorBlinkTimer.cancel();
     _focusNode.unfocus();
     _status = TypeWriterStatus.finish;
     _setTargetText(_text);
@@ -95,43 +137,28 @@ class TypeWriter {
     _undisplayedText = "";
   }
 
-  /// 开始输出
-  void _startType() {
-    if (_isTyping) return;
-    _status = TypeWriterStatus.running;
-    _cursorTimer.cancel();
-    _displayTextPerDuration();
-    _textTimer = Timer.periodic(
-      Duration(milliseconds: (1000 / _speed).round()),
-      (t) => _displayTextPerDuration(),
-    );
-  }
-
-  /// 停止输出（进入等待状态）
-  void _stopType() {
-    _status = TypeWriterStatus.waiting;
-    _textTimer.cancel();
-    _cursorBlink();
-    _cursorTimer = Timer.periodic(
-      Duration(milliseconds: (300).round()),
-      (t) => _cursorBlink(),
-    );
-  }
-
-  void _displayTextPerDuration() {
-    // debugPrint("displayTextPerDuration tick : ${t.tick}");
-    // 取出未输入的第一个字符，插入至已输入的最后
-    final String char = _undisplayedText.substring(0, 1);
-    _undisplayedText = _undisplayedText.substring(1);
-    _displayedText += char;
+  void _typeOneChar() {
+    if (!_isTyping) {
+      return;
+    }
+    final int char = _undisplayedText.runes.first;
+    if (char > 65535) {
+      _undisplayedText = _undisplayedText.substring(2);
+    } else {
+      _undisplayedText = _undisplayedText.substring(1);
+    }
+    _displayedText += String.fromCharCode(char);
     if (_isFocused) {
       _setTargetText(_displayedText);
     } else {
       _setTargetText(_displayedText + _cursor);
     }
     if (_nothingToType) {
-      _stopType();
-      _setTargetText(_displayedText);
+      if (_gotTheLastChar) {
+        _turnToFinish();
+      } else {
+        _turnToWaiting();
+      }
     }
   }
 
