@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:spark_chat/common/models/chat_model.dart';
@@ -17,14 +18,19 @@ class ChatController extends GetxController {
 
   final messageInputController = TextEditingController();
 
+  final messageInputFocusNode = FocusNode();
+
   final messageOutputController = TextEditingController();
+
+  final messageOutputScrollController = ScrollController();
 
   final messageOutputFocusNode = FocusNode();
 
   late final typeWriter = TypeWriter(
       target: messageOutputController,
+      scrollController: messageOutputScrollController,
       focusNode: messageOutputFocusNode,
-      speed: 100,
+      speed: 50,
       cursor: "_");
 
   // tap
@@ -101,8 +107,19 @@ class ChatController extends GetxController {
     );
   }
 
+  /// 隐藏键盘
   void hideKeyboard() {
     FocusScope.of(Get.context!).requestFocus(FocusNode());
+  }
+
+  /// 复制到剪贴板
+  void copyToClipboard() {
+    Clipboard.setData(ClipboardData(text: messageOutputController.text));
+    Get.snackbar(
+      "Success",
+      "已复制到剪贴板，长度：${messageOutputController.text.length}",
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 
   /// 在 widget 内存中分配后立即调用。

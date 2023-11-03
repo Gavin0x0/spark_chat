@@ -7,6 +7,9 @@ class TypeWriter {
   /// 目标文本框
   final TextEditingController _target;
 
+  /// 目标文件框滚动控制器
+  final ScrollController _scrollController;
+
   /// 目标文件框焦点
   final FocusNode _focusNode;
 
@@ -41,9 +44,12 @@ class TypeWriter {
   /// 等待中光标动画定时器
   Timer _cursorBlinkTimer = Timer(Duration.zero, () {});
 
+  /// 可滚动高度缓存
+  double _maxScrollExtentCache = 0;
+
   bool get isBusy => _status != TypeWriterStatus.finish;
 
-  bool get _isTyping => _status == TypeWriterStatus.running;
+  bool get _isRunning => _status == TypeWriterStatus.running;
 
   bool get _nothingToType => _undisplayedText.isEmpty;
 
@@ -51,12 +57,14 @@ class TypeWriter {
 
   TypeWriter({
     required TextEditingController target,
+    required ScrollController scrollController,
     required FocusNode focusNode,
     String cursor = "|",
     int speed = 1,
   })  : _cursor = cursor,
         _speed = speed,
         _target = target,
+        _scrollController = scrollController,
         _focusNode = focusNode,
         assert(speed >= 1 && speed <= 1000, "Speed must between 1-1000");
 
@@ -93,7 +101,6 @@ class TypeWriter {
   /// 追加文本
   void addText(String text) {
     _text += text;
-    print("addText: $text");
     _undisplayedText += text;
     _turnToRunning();
   }
@@ -105,10 +112,11 @@ class TypeWriter {
 
   /// 开始输出
   void _turnToRunning() {
-    if (_isTyping) return;
+    if (_isRunning) return;
     _status = TypeWriterStatus.running;
     _cursorBlinkTimer.cancel();
     _typeOneChar();
+    _typeWriterTimer.cancel();
     _typeWriterTimer = Timer.periodic(
       Duration(milliseconds: (1000 / _speed).round()),
       (t) => _typeOneChar(),
@@ -120,6 +128,7 @@ class TypeWriter {
     _status = TypeWriterStatus.waiting;
     _typeWriterTimer.cancel();
     _cursorBlink();
+    _cursorBlinkTimer.cancel();
     _cursorBlinkTimer = Timer.periodic(
       Duration(milliseconds: (300).round()),
       (t) => _cursorBlink(),
@@ -135,10 +144,11 @@ class TypeWriter {
     _text = "";
     _displayedText = "";
     _undisplayedText = "";
+    _maxScrollExtentCache = 0;
   }
 
   void _typeOneChar() {
-    if (!_isTyping) {
+    if (!_isRunning) {
       return;
     }
     final int char = _undisplayedText.runes.first;
@@ -160,6 +170,23 @@ class TypeWriter {
         _turnToWaiting();
       }
     }
+  }
+
+  /// 滚动至底部
+  void _scrollToBottom() {
+    // 如果有焦点则不滚动
+    if (_isFocused) {
+      return;
+    }
+    final double kMaxScrollExtent = _scrollController.position.maxScrollExtent;
+    if (_maxScrollExtentCache < kMaxScrollExtent) {
+      _scrollController.animateTo(
+        kMaxScrollExtent,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
+    _maxScrollExtentCache = kMaxScrollExtent;
   }
 
   // 闪烁光标
@@ -191,6 +218,7 @@ class TypeWriter {
         );
       } else {
         _target.text = text;
+        _scrollToBottom();
       }
     }
   }

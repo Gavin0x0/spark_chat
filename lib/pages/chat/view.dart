@@ -16,6 +16,7 @@ class ChatPage extends GetView<ChatController> {
             child: TextField(
               controller: controller.messageOutputController,
               focusNode: controller.messageOutputFocusNode,
+              scrollController: controller.messageOutputScrollController,
               maxLines: 100,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -58,6 +59,25 @@ class ChatPage extends GetView<ChatController> {
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 1,
+                  ),
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: TextButton(
+                    onPressed: () {
+                      controller.copyToClipboard();
+                    },
+                    child: const Icon(Icons.copy),
                   ),
                 ),
               ),
