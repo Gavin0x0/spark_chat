@@ -174,8 +174,10 @@ class TypeWriter {
 
   /// 滚动至底部
   void _scrollToBottom() {
-    // 如果有焦点则不滚动
     if (_isFocused) {
+      return;
+    }
+    if (!_scrollController.hasClients) {
       return;
     }
     final double kMaxScrollExtent = _scrollController.position.maxScrollExtent;

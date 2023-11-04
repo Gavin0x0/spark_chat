@@ -11,36 +11,18 @@ class ChatPage extends GetView<ChatController> {
     return Column(
       children: [
         Flexible(
-          flex: 2,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            // 带边框的 TextField
-            child: TextField(
-              controller: controller.messageOutputController,
-              focusNode: controller.messageOutputFocusNode,
-              scrollController: controller.messageOutputScrollController,
-              maxLines: 100,
-              style: const TextStyle(
-                fontSize: 12,
-              ),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Output",
-              ),
-            ),
-          ),
-        ),
-        const Divider(height: 1),
-        Flexible(
-          flex: 2,
+          flex: 3,
           child: Container(
             padding: const EdgeInsets.all(10),
             // 带边框的 TextField
             child: Obx(
-              () => Markdown(
-                selectable: true,
-                data: controller.state.outputContent,
-              ),
+              () {
+                if (controller.state.displayAsMarkdown) {
+                  return _buildMarkdownOutput();
+                } else {
+                  return _buildOutput();
+                }
+              },
             ),
           ),
         ),
@@ -49,14 +31,7 @@ class ChatPage extends GetView<ChatController> {
           flex: 1,
           child: Container(
             padding: const EdgeInsets.all(10),
-            child: TextField(
-              controller: controller.messageInputController,
-              maxLines: 100,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Input",
-              ),
-            ),
+            child: _buildInput(),
           ),
         ),
         Container(
@@ -71,55 +46,34 @@ class ChatPage extends GetView<ChatController> {
                     /// 触发键盘收起事件
                     controller.hideKeyboard();
                   },
-                  child: SizedBox(
-                    height: double.infinity,
-                    child: Obx(
-                      () => Text(
-                        "Token Usage: ${controller.state.tokenUsage}",
-                        style: const TextStyle(color: Colors.grey),
-                      ),
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Text(
+                        //   "Token Usage: ${controller.state.tokenUsage}",
+                        //   style:
+                        //       const TextStyle(color: Colors.grey, fontSize: 10),
+                        // ),
+                        Row(
+                          children: [
+                            const Text("Markdown"),
+                            Switch(
+                              value: controller.state.displayAsMarkdown,
+                              splashRadius: 15,
+                              onChanged: (value) {
+                                controller.state.displayAsMarkdown = value;
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: Colors.blue,
-                    width: 1,
-                  ),
-                ),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: TextButton(
-                    onPressed: () {
-                      controller.copyToClipboard();
-                    },
-                    child: const Icon(Icons.copy),
-                  ),
-                ),
-              ),
-              Container(
-                width: 80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: Colors.blue,
-                    width: 1,
-                  ),
-                ),
-                child: AspectRatio(
-                  aspectRatio: 1.618,
-                  child: TextButton(
-                    onPressed: () {
-                      controller.handleSend();
-                    },
-                    child: const Text("Send"),
-                  ),
-                ),
-              ),
+              _buildCopyButton(),
+              _buildSendButton(),
             ],
           ),
         ),
@@ -138,6 +92,85 @@ class ChatPage extends GetView<ChatController> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildMarkdownOutput() {
+    return Markdown(
+      selectable: true,
+      data: controller.state.outputContent,
+    );
+  }
+
+  Widget _buildOutput() {
+    return TextField(
+      controller: controller.messageOutputController,
+      focusNode: controller.messageOutputFocusNode,
+      scrollController: controller.messageOutputScrollController,
+      maxLines: 100,
+      style: const TextStyle(
+        fontSize: 12,
+      ),
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Output",
+      ),
+    );
+  }
+
+  Widget _buildInput() {
+    return TextField(
+      controller: controller.messageInputController,
+      focusNode: controller.messageInputFocusNode,
+      maxLines: 100,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Input",
+      ),
+    );
+  }
+
+  Widget _buildCopyButton() {
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: Colors.blue,
+          width: 1,
+        ),
+      ),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: TextButton(
+          onPressed: () {
+            controller.copyToClipboard();
+          },
+          child: const Icon(Icons.copy),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSendButton() {
+    return Container(
+      width: 80,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: Colors.blue,
+          width: 1,
+        ),
+      ),
+      child: AspectRatio(
+        aspectRatio: 1.618,
+        child: TextButton(
+          onPressed: () {
+            controller.handleSend();
+          },
+          child: const Text("Send"),
+        ),
+      ),
     );
   }
 }

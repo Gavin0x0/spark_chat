@@ -15,4 +15,9 @@ class ChatState {
   final _tokenUsage = 0.obs;
   set tokenUsage(int value) => _tokenUsage.value = value;
   int get tokenUsage => _tokenUsage.value;
+
+  // 是否显示为 Markdown
+  final _displayAsMarkdown = false.obs;
+  set displayAsMarkdown(bool value) => _displayAsMarkdown.value = value;
+  bool get displayAsMarkdown => _displayAsMarkdown.value;
 }
