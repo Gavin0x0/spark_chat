@@ -9,7 +9,8 @@ class ChatPage extends GetView<ChatController> {
   Widget _buildView() {
     return Column(
       children: [
-        Expanded(
+        Flexible(
+          flex: 3,
           child: Container(
             padding: const EdgeInsets.all(10),
             // 带边框的 TextField
@@ -18,6 +19,9 @@ class ChatPage extends GetView<ChatController> {
               focusNode: controller.messageOutputFocusNode,
               scrollController: controller.messageOutputScrollController,
               maxLines: 100,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Output",
@@ -26,7 +30,8 @@ class ChatPage extends GetView<ChatController> {
           ),
         ),
         const Divider(height: 1),
-        Expanded(
+        Flexible(
+          flex: 1,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: TextField(
