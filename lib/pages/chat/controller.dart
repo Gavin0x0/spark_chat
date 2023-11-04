@@ -45,6 +45,7 @@ class ChatController extends GetxController {
       return;
     }
     typeWriter.initTypeWriter();
+    state.outputContent = "";
     startOutput();
   }
 
@@ -84,6 +85,7 @@ class ChatController extends GetxController {
             eachResponse += e.content;
           }
           typeWriter.addText(eachResponse);
+          state.outputContent += eachResponse;
           if (chatResponse.payload!.usage != null) {
             debugPrint(
                 "🪙 Used tokens: ${chatResponse.payload!.usage!.totalTokens}");

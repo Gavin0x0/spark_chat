@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'index.dart';
 
@@ -10,7 +11,7 @@ class ChatPage extends GetView<ChatController> {
     return Column(
       children: [
         Flexible(
-          flex: 3,
+          flex: 2,
           child: Container(
             padding: const EdgeInsets.all(10),
             // 带边框的 TextField
@@ -25,6 +26,20 @@ class ChatPage extends GetView<ChatController> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Output",
+              ),
+            ),
+          ),
+        ),
+        const Divider(height: 1),
+        Flexible(
+          flex: 2,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            // 带边框的 TextField
+            child: Obx(
+              () => Markdown(
+                selectable: true,
+                data: controller.state.outputContent,
               ),
             ),
           ),

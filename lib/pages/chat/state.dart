@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 
 class ChatState {
-  // title
-  final _title = "".obs;
-  set title(value) => _title.value = value;
-  get title => _title.value;
+  // output str
+  final _outputContent = "".obs;
+  set outputContent(String value) => _outputContent.value = value;
+  String get outputContent => _outputContent.value;
 
   // uid
   final _uid = "".obs;
