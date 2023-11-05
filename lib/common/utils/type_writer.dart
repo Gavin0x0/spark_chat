@@ -108,6 +108,9 @@ class TypeWriter {
   /// 输入完了
   void inputFinished() {
     _gotTheLastChar = true;
+    if (_nothingToType) {
+      _turnToFinish();
+    }
   }
 
   /// 开始输出
@@ -233,10 +236,14 @@ class TypeWriter {
 
   /// 选中区域保持不变
   void _restoreSelection(int baseOffset, int extentOffset) {
-    _target.selection = TextSelection(
-      baseOffset: baseOffset,
-      extentOffset: extentOffset,
-    );
+    try {
+      _target.selection = TextSelection(
+        baseOffset: baseOffset,
+        extentOffset: extentOffset,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
 

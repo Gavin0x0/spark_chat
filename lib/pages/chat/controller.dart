@@ -26,6 +26,8 @@ class ChatController extends GetxController {
 
   final messageOutputFocusNode = FocusNode();
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   late final typeWriter = TypeWriter(
       target: messageOutputController,
       scrollController: messageOutputScrollController,
@@ -55,6 +57,7 @@ class ChatController extends GetxController {
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',
+      uid: state.uid,
       messages: [
         Message(role: 'user', content: messageInputController.text),
       ],
@@ -89,7 +92,6 @@ class ChatController extends GetxController {
           if (chatResponse.payload!.usage != null) {
             debugPrint(
                 "🪙 Used tokens: ${chatResponse.payload!.usage!.totalTokens}");
-            typeWriter.inputFinished();
             state.tokenUsage += chatResponse.payload!.usage!.totalTokens;
           }
         }
@@ -97,14 +99,11 @@ class ChatController extends GetxController {
       onDone: () {
         debugPrint("🔌 Disconnected");
         ws.sink.close();
+        typeWriter.inputFinished();
       },
       onError: (e) {
         debugPrint("Error: $e");
-        Get.snackbar(
-          "Error",
-          "连接服务器失败，请检查网络或 APIKey",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        typeWriter.addText("连接服务器失败，请检查网络或 APIKey。");
       },
     );
   }

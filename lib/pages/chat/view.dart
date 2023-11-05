@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'index.dart';
+import 'widgets/widgets.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
@@ -86,7 +87,14 @@ class ChatPage extends GetView<ChatController> {
     return GetBuilder<ChatController>(
       builder: (_) {
         return Scaffold(
-          appBar: AppBar(title: const Text("Spark Chat")),
+          key: controller.scaffoldKey,
+          appBar: AppBar(
+            title: const Text("Spark Chat"),
+            actions: [
+              _buildSettingIconBtn(context),
+            ],
+          ),
+          endDrawer: const SettingDrawer(),
           body: SafeArea(
             child: _buildView(),
           ),
@@ -171,6 +179,17 @@ class ChatPage extends GetView<ChatController> {
           child: const Text("Send"),
         ),
       ),
+    );
+  }
+
+  Widget _buildSettingIconBtn(BuildContext ctx) {
+    return IconButton(
+      onPressed: () {
+        if (controller.scaffoldKey.currentState != null) {
+          controller.scaffoldKey.currentState!.openEndDrawer();
+        }
+      },
+      icon: const Icon(Icons.settings),
     );
   }
 }
