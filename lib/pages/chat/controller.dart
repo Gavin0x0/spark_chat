@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:spark_chat/common/models/chat_model.dart';
-import 'package:spark_chat/common/services/index.dart';
-import 'package:spark_chat/common/utils/auth_util.dart';
-import 'package:spark_chat/common/utils/type_writer.dart';
+import 'package:spark_chat/common/index.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'index.dart';

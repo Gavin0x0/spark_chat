@@ -8,5 +8,6 @@ void main() async {
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
   Get.put(ConfigService());
+  await Get.find<ConfigService>().init();
   runApp(const MyApp());
 }

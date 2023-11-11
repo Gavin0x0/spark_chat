@@ -72,6 +72,9 @@ class SettingDrawer extends GetView<ChatController> {
                       labelText: "User ID",
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      ConfigService.ins.setUserId(value);
+                    },
                   ),
                   const SizedBox(
                     height: 20,
