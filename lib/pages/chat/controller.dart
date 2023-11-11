@@ -58,7 +58,7 @@ class ChatController extends GetxController {
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',
-      uid: state.uid,
+      uid: ConfigService.ins.userId,
       messages: [
         Message(role: 'user', content: messageInputController.text),
       ],
@@ -129,7 +129,6 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     // 生成用户id
-    state.uid = DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   /// 在 onInit() 之后调用 1 帧。这是进入的理想场所

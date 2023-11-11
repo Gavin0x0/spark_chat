@@ -145,38 +145,30 @@ class ChatPage extends GetView<ChatController> {
   Widget _buildCopyButton() {
     return Container(
       margin: const EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.blue,
-          width: 1,
-        ),
-      ),
       child: AspectRatio(
         aspectRatio: 1,
-        child: TextButton(
+        child: ElevatedButton(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+          ),
           onPressed: () {
             controller.copyToClipboard();
           },
-          child: const Icon(Icons.copy),
+          child: const Center(child: Icon(Icons.copy)),
         ),
       ),
     );
   }
 
   Widget _buildSendButton() {
-    return Container(
+    return SizedBox(
       width: 80,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.blue,
-          width: 1,
-        ),
-      ),
       child: AspectRatio(
         aspectRatio: 1.618,
-        child: TextButton(
+        child: ElevatedButton(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+          ),
           onPressed: () {
             controller.handleSend();
           },
