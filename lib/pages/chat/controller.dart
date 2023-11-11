@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:spark_chat/common/models/chat_model.dart';
+import 'package:spark_chat/common/services/index.dart';
 import 'package:spark_chat/common/utils/auth_util.dart';
 import 'package:spark_chat/common/utils/type_writer.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -53,7 +53,8 @@ class ChatController extends GetxController {
 
   /// 开始输出
   void startOutput() {
-    String appId = dotenv.env['APPID'] ?? '';
+    // String appId = dotenv.env['APPID'] ?? '';
+    String appId = ConfigService.ins.appId;
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',
@@ -75,11 +76,11 @@ class ChatController extends GetxController {
       (event) {
         ChatResponse chatResponse = ChatResponse.fromJson(jsonDecode(event));
         if (chatResponse.header.code != 0) {
-          Get.snackbar(
-            "Error",
-            chatResponse.header.message,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // Get.snackbar(
+          //   "Error",
+          //   chatResponse.header.message,
+          //   snackPosition: SnackPosition.BOTTOM,
+          // );
           typeWriter.addText(chatResponse.header.message);
         } else if (chatResponse.payload != null) {
           String eachResponse = "";

@@ -154,13 +154,15 @@ class TypeWriter {
     if (!_isRunning) {
       return;
     }
-    final int char = _undisplayedText.runes.first;
-    if (char > 65535) {
-      _undisplayedText = _undisplayedText.substring(2);
-    } else {
-      _undisplayedText = _undisplayedText.substring(1);
+    if (_undisplayedText.runes.isNotEmpty) {
+      final int char = _undisplayedText.runes.first;
+      if (char > 65535) {
+        _undisplayedText = _undisplayedText.substring(2);
+      } else {
+        _undisplayedText = _undisplayedText.substring(1);
+      }
+      _displayedText += String.fromCharCode(char);
     }
-    _displayedText += String.fromCharCode(char);
     if (_isFocused) {
       _setTargetText(_displayedText);
     } else {

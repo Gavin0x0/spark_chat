@@ -41,34 +41,38 @@ class ChatPage extends GetView<ChatController> {
           child: Row(
             children: [
               Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTapDown: (details) {
-                    /// 触发键盘收起事件
-                    controller.hideKeyboard();
-                  },
-                  child: Obx(
-                    () => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Text(
-                        //   "Token Usage: ${controller.state.tokenUsage}",
-                        //   style:
-                        //       const TextStyle(color: Colors.grey, fontSize: 10),
-                        // ),
-                        Row(
-                          children: [
-                            const Text("Markdown"),
-                            Switch(
-                              value: controller.state.displayAsMarkdown,
-                              splashRadius: 15,
-                              onChanged: (value) {
-                                controller.state.displayAsMarkdown = value;
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapDown: (details) {
+                      /// 触发键盘收起事件
+                      controller.hideKeyboard();
+                    },
+                    child: Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text(
+                          //   "Token Usage: ${controller.state.tokenUsage}",
+                          //   style:
+                          //       const TextStyle(color: Colors.grey, fontSize: 10),
+                          // ),
+                          Row(
+                            children: [
+                              const Text("Markdown"),
+                              Switch(
+                                value: controller.state.displayAsMarkdown,
+                                splashRadius: 15,
+                                onChanged: (value) {
+                                  controller.state.displayAsMarkdown = value;
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

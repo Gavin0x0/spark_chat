@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:spark_chat/common/index.dart';
 
 class AuthUtil {
   static const String host = 'spark-api.xf-yun.com';
   static String generateAuthUrl(String path) {
-    String apiKey = dotenv.env['APIKEY'] ?? '';
+    String apiKey = ConfigService.ins.apiKey;
     DateTime now = DateTime.now().toUtc();
     String date = formatDate(now);
     String tmp = "host: $host\ndate: $date\nGET $path HTTP/1.1";
@@ -32,7 +32,7 @@ class AuthUtil {
   }
 
   static String generateSignature(String tmp, String date) {
-    String apiSecret = dotenv.env['APISECRET'] ?? '';
+    String apiSecret = ConfigService.ins.apiSecret;
     List<int> key = utf8.encode(apiSecret);
     List<int> bytes = utf8.encode(tmp);
     Hmac hmacSha256 = Hmac(sha256, key);
