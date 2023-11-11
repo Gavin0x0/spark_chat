@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'index.dart';
@@ -66,6 +67,7 @@ class ChatPage extends GetView<ChatController> {
                                 value: controller.state.displayAsMarkdown,
                                 splashRadius: 15,
                                 onChanged: (value) {
+                                  HapticFeedback.mediumImpact();
                                   controller.state.displayAsMarkdown = value;
                                 },
                               ),
@@ -116,6 +118,7 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _buildOutput() {
     return TextField(
+      autofocus: false,
       controller: controller.messageOutputController,
       focusNode: controller.messageOutputFocusNode,
       scrollController: controller.messageOutputScrollController,
@@ -132,6 +135,7 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _buildInput() {
     return TextField(
+      autofocus: false,
       controller: controller.messageInputController,
       focusNode: controller.messageInputFocusNode,
       maxLines: 100,
@@ -181,6 +185,7 @@ class ChatPage extends GetView<ChatController> {
   Widget _buildSettingIconBtn(BuildContext ctx) {
     return IconButton(
       onPressed: () {
+        HapticFeedback.mediumImpact();
         if (controller.scaffoldKey.currentState != null) {
           controller.scaffoldKey.currentState!.openEndDrawer();
         }

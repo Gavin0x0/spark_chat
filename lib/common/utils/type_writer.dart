@@ -141,7 +141,9 @@ class TypeWriter {
   void _turnToFinish() {
     _typeWriterTimer.cancel();
     _cursorBlinkTimer.cancel();
-    _focusNode.unfocus();
+    if (FocusManager.instance.primaryFocus != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
     _status = TypeWriterStatus.finish;
     _setTargetText(_text);
     _text = "";

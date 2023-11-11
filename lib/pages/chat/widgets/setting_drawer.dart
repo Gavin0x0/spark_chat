@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:spark_chat/common/index.dart';
 
@@ -10,101 +11,103 @@ class SettingDrawer extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
-        children: [
-          _buildHeadBar(),
-          Container(
-            margin: const EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  "接口配置",
-                  style: TextStyle(fontSize: 18),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const TextField(
-                  decoration: InputDecoration(
-                    labelText: "APP ID",
-                    border: OutlineInputBorder(),
+      child: SafeArea(
+        child: Column(
+          children: [
+            // _buildHeadBar(),
+            Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const TextField(
-                  decoration: InputDecoration(
-                    labelText: "API KEY",
-                    border: OutlineInputBorder(),
+                  const Text(
+                    "接口配置",
+                    style: TextStyle(fontSize: 18),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const TextField(
-                  decoration: InputDecoration(
-                    labelText: "API SECRET",
-                    border: OutlineInputBorder(),
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "用户配置",
-                  style: TextStyle(fontSize: 18),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  controller: TextEditingController(
-                    text: ConfigService.ins.userId,
+                  const TextField(
+                    decoration: InputDecoration(
+                      labelText: "APP ID",
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                  decoration: const InputDecoration(
-                    labelText: "User ID",
-                    border: OutlineInputBorder(),
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "通用配置",
-                  style: TextStyle(fontSize: 18),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                _buildDarkModeMenu(),
-                const SizedBox(
-                  height: 10,
-                ),
-                _buildMaterialVersion(),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "用量统计",
-                  style: TextStyle(fontSize: 18),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                _buildCountText("请求次数：", "TODO"),
-                const SizedBox(
-                  height: 10,
-                ),
-                _buildCountText("Tokens 用量：", "TODO"),
-              ],
+                  const TextField(
+                    decoration: InputDecoration(
+                      labelText: "API KEY",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const TextField(
+                    decoration: InputDecoration(
+                      labelText: "API SECRET",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "用户配置",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: TextEditingController(
+                      text: ConfigService.ins.userId,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: "User ID",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "通用配置",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _buildDarkModeMenu(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _buildMaterialVersion(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "用量统计",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _buildCountText("请求次数：", "TODO"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _buildCountText("Tokens 用量：", "TODO"),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -150,6 +153,7 @@ class SettingDrawer extends GetView<ChatController> {
           () => Switch(
             value: ConfigService.ins.useMaterial3,
             onChanged: (value) {
+              HapticFeedback.mediumImpact();
               ConfigService.ins.setMaterial3(value);
             },
           ),
@@ -169,22 +173,6 @@ class SettingDrawer extends GetView<ChatController> {
       default:
         return "跟随系统";
     }
-  }
-
-  Widget _buildHeadBar() {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(
-            Icons.close,
-            color: Colors.grey,
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _buildCountText(String title, String value) {

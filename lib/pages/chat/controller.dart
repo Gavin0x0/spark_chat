@@ -37,6 +37,7 @@ class ChatController extends GetxController {
 
   // tap
   void handleSend() {
+    HapticFeedback.mediumImpact();
     hideKeyboard();
     if (typeWriter.isBusy) {
       Get.snackbar(
@@ -111,17 +112,15 @@ class ChatController extends GetxController {
 
   /// 隐藏键盘
   void hideKeyboard() {
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    if (FocusManager.instance.primaryFocus != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
   }
 
   /// 复制到剪贴板
   void copyToClipboard() {
     Clipboard.setData(ClipboardData(text: messageOutputController.text));
-    Get.snackbar(
-      "Success",
-      "已复制到剪贴板，长度：${messageOutputController.text.length}",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    HapticFeedback.mediumImpact();
   }
 
   /// 在 widget 内存中分配后立即调用。
