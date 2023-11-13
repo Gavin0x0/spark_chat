@@ -10,6 +10,15 @@ class SettingDrawer extends GetView<ChatController> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController appIdController = TextEditingController(
+      text: ConfigService.ins.appId,
+    );
+    TextEditingController apiKeyController = TextEditingController(
+      text: ConfigService.ins.apiKey,
+    );
+    TextEditingController apiSecretController = TextEditingController(
+      text: ConfigService.ins.apiSecret,
+    );
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -23,36 +32,65 @@ class SettingDrawer extends GetView<ChatController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text(
-                    "接口配置",
-                    style: TextStyle(fontSize: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "接口配置",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          /// TODO 抽取到 controller 中
+                          appIdController.text = "";
+                          apiKeyController.text = "";
+                          apiSecretController.text = "";
+                          ConfigService.ins.setAppId("");
+                          ConfigService.ins.setApiKey("");
+                          ConfigService.ins.setApiSecret("");
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: appIdController,
+                    decoration: const InputDecoration(
                       labelText: "APP ID",
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      ConfigService.ins.setAppId(value);
+                    },
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: apiKeyController,
+                    decoration: const InputDecoration(
                       labelText: "API KEY",
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      ConfigService.ins.setApiKey(value);
+                    },
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: apiSecretController,
+                    decoration: const InputDecoration(
                       labelText: "API SECRET",
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      ConfigService.ins.setApiSecret(value);
+                    },
                   ),
                   const SizedBox(
                     height: 20,

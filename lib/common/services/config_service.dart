@@ -7,14 +7,23 @@ import 'package:spark_chat/common/index.dart';
 class ConfigService extends GetxService {
   static ConfigService get ins => Get.find<ConfigService>();
 
+  /// 编译时带入参数
+  String _localAppId = "";
+  String _localApiKey = "";
+  String _localApiSecret = "";
+
   String _appId = "";
   String get appId => _appId;
+  String get appIdOrLocal => _appId.isNotEmpty ? _appId : _localAppId;
 
   String _apiKey = "";
   String get apiKey => _apiKey;
+  String get apiKeyOrLocal => _apiKey.isNotEmpty ? _apiKey : _localApiKey;
 
   String _apiSecret = "";
   String get apiSecret => _apiSecret;
+  String get apiSecretOrLocal =>
+      _apiSecret.isNotEmpty ? _apiSecret : _localApiSecret;
 
   String _userId = "";
   String get userId => _userId;
@@ -36,9 +45,9 @@ class ConfigService extends GetxService {
 
   Future<void> _loadDevEnvConfig() async {
     await dotenv.load(fileName: ".env");
-    _appId = dotenv.env['APPID'] ?? '';
-    _apiKey = dotenv.env['APIKEY'] ?? '';
-    _apiSecret = dotenv.env['APISECRET'] ?? '';
+    _localAppId = dotenv.env['APPID'] ?? '';
+    _localApiKey = dotenv.env['APIKEY'] ?? '';
+    _localApiSecret = dotenv.env['APISECRET'] ?? '';
   }
 
   Future<void> _loadLocalConfig() async {
@@ -51,7 +60,7 @@ class ConfigService extends GetxService {
     bool? localUseMaterial3 = _localConfigBox.get('useMaterial3');
     bool? localDarkMode = _localConfigBox.get('darkMode');
     if (localUserId.isNotNullOrEmpty) {
-      Log.i("存在用户ID： $localUserId");
+      Log.i("缓存了用户ID： $localUserId");
       _userId = localUserId!;
     } else {
       String newUserId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -59,23 +68,23 @@ class ConfigService extends GetxService {
       _localConfigBox.put('userId', _userId);
     }
     if (localAppId.isNotNullOrEmpty) {
-      Log.i("存在APPID： $localAppId");
+      Log.i("缓存了APPID： $localAppId");
       _appId = localAppId!;
     }
     if (localApiKey.isNotNullOrEmpty) {
-      Log.i("存在APIKEY： $localApiKey");
+      Log.i("缓存了APIKEY： $localApiKey");
       _apiKey = localApiKey!;
     }
     if (localApiSecret.isNotNullOrEmpty) {
-      Log.i("存在APISECRET： $localApiSecret");
+      Log.i("缓存了APISECRET： $localApiSecret");
       _apiSecret = localApiSecret!;
     }
     if (localUseMaterial3 != null) {
-      Log.i("存在useMaterial3： $localUseMaterial3");
+      Log.i("缓存了useMaterial3： $localUseMaterial3");
       useMaterial3 = localUseMaterial3;
     }
     if (localDarkMode != null) {
-      Log.i("存在darkMode： $localDarkMode");
+      Log.i("缓存了darkMode： $localDarkMode");
       _themeMode = localDarkMode ? ThemeMode.dark : ThemeMode.light;
       Get.changeThemeMode(_themeMode);
     }

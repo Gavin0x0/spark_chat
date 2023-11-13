@@ -52,8 +52,7 @@ class ChatController extends GetxController {
 
   /// 开始输出
   void startOutput() {
-    // String appId = dotenv.env['APPID'] ?? '';
-    String appId = ConfigService.ins.appId;
+    String appId = ConfigService.ins.appIdOrLocal;
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',

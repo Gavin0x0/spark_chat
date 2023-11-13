@@ -6,7 +6,7 @@ import 'package:spark_chat/common/index.dart';
 class AuthUtil {
   static const String host = 'spark-api.xf-yun.com';
   static String generateAuthUrl(String path) {
-    String apiKey = ConfigService.ins.apiKey;
+    String apiKey = ConfigService.ins.apiKeyOrLocal;
     DateTime now = DateTime.now().toUtc();
     String date = formatDate(now);
     String tmp = "host: $host\ndate: $date\nGET $path HTTP/1.1";
@@ -32,7 +32,7 @@ class AuthUtil {
   }
 
   static String generateSignature(String tmp, String date) {
-    String apiSecret = ConfigService.ins.apiSecret;
+    String apiSecret = ConfigService.ins.apiSecretOrLocal;
     List<int> key = utf8.encode(apiSecret);
     List<int> bytes = utf8.encode(tmp);
     Hmac hmacSha256 = Hmac(sha256, key);
