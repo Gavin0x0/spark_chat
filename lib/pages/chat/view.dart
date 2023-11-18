@@ -45,36 +45,29 @@ class ChatPage extends GetView<ChatController> {
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: const BoxDecoration(),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTapDown: (details) {
-                      /// 触发键盘收起事件
-                      controller.hideKeyboard();
-                    },
-                    child: Obx(
-                      () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text(
-                          //   "Token Usage: ${controller.state.tokenUsage}",
-                          //   style:
-                          //       const TextStyle(color: Colors.grey, fontSize: 10),
-                          // ),
-                          Row(
-                            children: [
-                              const Text("Markdown"),
-                              Switch(
-                                value: controller.state.displayAsMarkdown,
-                                splashRadius: 15,
-                                onChanged: (value) {
-                                  HapticFeedback.mediumImpact();
-                                  controller.state.displayAsMarkdown = value;
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Text(
+                        //   "Token Usage: ${controller.state.tokenUsage}",
+                        //   style:
+                        //       const TextStyle(color: Colors.grey, fontSize: 10),
+                        // ),
+                        Row(
+                          children: [
+                            const Text("Markdown"),
+                            Switch(
+                              value: controller.state.displayAsMarkdown,
+                              splashRadius: 15,
+                              onChanged: (value) {
+                                HapticFeedback.mediumImpact();
+                                controller.state.displayAsMarkdown = value;
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -92,18 +85,33 @@ class ChatPage extends GetView<ChatController> {
   Widget build(BuildContext context) {
     return GetBuilder<ChatController>(
       builder: (_) {
-        return Scaffold(
-          key: controller.scaffoldKey,
-          appBar: AppBar(
-            title: const Text("Spark Chat"),
-            actions: [
-              _buildSettingIconBtn(context),
-            ],
-          ),
-          endDrawer: const SettingDrawer(),
-          body: SafeArea(
-            child: _buildView(),
-          ),
+        return GestureDetector(
+          onTap: () => controller.hideKeyboard(),
+          child: Obx(() => Scaffold(
+                key: controller.scaffoldKey,
+                appBar: AppBar(
+                  title: const Text("Spark Chat"),
+                  actions: [
+                    _buildSettingIconBtn(context),
+                  ],
+                ),
+                resizeToAvoidBottomInset: !controller.state.isDrawerOpening,
+                endDrawer: const SettingDrawer(),
+                onEndDrawerChanged: (isOpened) {
+                  if (isOpened) {
+                    controller.state.isDrawerOpening = isOpened;
+                  } else {
+                    /// 延迟到动画结束再设置
+                    Future.delayed(const Duration(milliseconds: 600), () {
+                      controller.state.isDrawerOpening = isOpened;
+                    });
+                  }
+                },
+                body: SafeArea(
+                  maintainBottomViewPadding: true,
+                  child: _buildView(),
+                ),
+              )),
         );
       },
     );
@@ -187,6 +195,7 @@ class ChatPage extends GetView<ChatController> {
       onPressed: () {
         HapticFeedback.mediumImpact();
         if (controller.scaffoldKey.currentState != null) {
+          controller.hideKeyboard();
           controller.scaffoldKey.currentState!.openEndDrawer();
         }
       },

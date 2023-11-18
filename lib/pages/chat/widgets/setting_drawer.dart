@@ -129,6 +129,10 @@ class SettingDrawer extends GetView<ChatController> {
                     height: 10,
                   ),
                   _buildMaterialVersion(),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  // _buildKeepKeyboardOnMobile(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -198,6 +202,22 @@ class SettingDrawer extends GetView<ChatController> {
               ConfigService.ins.setMaterial3(value);
             },
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKeepKeyboardOnMobile() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text("TODO:发送后不收起键盘"),
+        Switch(
+          value: false,
+          onChanged: (value) {
+            HapticFeedback.mediumImpact();
+            // ConfigService.ins.setMaterial3(value);
+          },
         ),
       ],
     );

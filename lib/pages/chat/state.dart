@@ -15,4 +15,9 @@ class ChatState {
   final _displayAsMarkdown = false.obs;
   set displayAsMarkdown(bool value) => _displayAsMarkdown.value = value;
   bool get displayAsMarkdown => _displayAsMarkdown.value;
+
+  // 抽屉是否打开
+  final _isDrawerOpening = false.obs;
+  set isDrawerOpening(bool value) => _isDrawerOpening.value = value;
+  bool get isDrawerOpening => _isDrawerOpening.value;
 }
