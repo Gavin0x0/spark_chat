@@ -26,6 +26,8 @@ class ChatController extends GetxController {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ChatHistory chatHistory = ChatHistory.empty();
+
   late final typeWriter = TypeWriter(
       target: messageOutputController,
       scrollController: messageOutputScrollController,
@@ -53,13 +55,14 @@ class ChatController extends GetxController {
   /// 开始输出
   void startOutput() {
     String appId = ConfigService.ins.appIdOrLocal;
+    chatHistory.addMessages([
+      Message(role: 'user', content: messageInputController.text),
+    ]);
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',
       uid: ConfigService.ins.userId,
-      messages: [
-        Message(role: 'user', content: messageInputController.text),
-      ],
+      messages: chatHistory.messages,
     );
     String jsonStr = jsonEncode(chatRequest.toJson());
     debugPrint("Send message 📤: \n$jsonStr");
@@ -74,11 +77,6 @@ class ChatController extends GetxController {
       (event) {
         ChatResponse chatResponse = ChatResponse.fromJson(jsonDecode(event));
         if (chatResponse.header.code != 0) {
-          // Get.snackbar(
-          //   "Error",
-          //   chatResponse.header.message,
-          //   snackPosition: SnackPosition.BOTTOM,
-          // );
           typeWriter.addText(chatResponse.header.message);
         } else if (chatResponse.payload != null) {
           String eachResponse = "";
@@ -98,6 +96,9 @@ class ChatController extends GetxController {
       onDone: () {
         debugPrint("🔌 Disconnected");
         ws.sink.close();
+        chatHistory.addMessages([
+          Message(role: 'assistant', content: state.outputContent),
+        ]);
         typeWriter.inputFinished();
       },
       onError: (e) {

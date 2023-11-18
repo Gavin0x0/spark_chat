@@ -73,31 +73,6 @@ class TypeWriter {
     _turnToWaiting();
   }
 
-  /// 设置文本【完整文本】
-  // void setText(String text) {
-  //   if (_text.isEmpty) {
-  //     _text = text;
-  //     _undisplayedText = text;
-  //     _turnToRunning();
-  //     return;
-  //   }
-
-  //   /// 将传入的text与原始text进行比较，如果存在追加更新，则添加进未输出的文本
-  //   if (text.length > _text.length) {
-  //     final String newTextHead = text.substring(0, _text.length);
-  //     if (newTextHead == _text) {
-  //       final String newText = text.substring(_text.length);
-  //       _undisplayedText += newText;
-  //       _turnToRunning();
-  //     } else {
-  //       debugPrint("原始文本发生变化++");
-  //     }
-  //   } else {
-  //     debugPrint("原始文本发生变化--/==");
-  //   }
-  //   _text = text;
-  // }
-
   /// 追加文本
   void addText(String text) {
     _text += text;

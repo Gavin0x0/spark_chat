@@ -1,3 +1,35 @@
+class ChatHistory {
+  final String name;
+  final DateTime createTime;
+  final List<Message> messages;
+
+  ChatHistory({
+    required this.name,
+    required this.createTime,
+    required this.messages,
+  });
+
+  /// 空构造函数
+  ChatHistory.empty()
+      : name = '',
+        createTime = DateTime.now(),
+        messages = [];
+
+  bool get isEmpty => messages.isEmpty;
+
+  void addMessages(List<Message> messages) {
+    this.messages.addAll(messages);
+  }
+
+  void countTokens() {
+    int tokens = 0;
+    for (var message in messages) {
+      tokens += message.content.length;
+    }
+    print('tokens: $tokens');
+  }
+}
+
 class ChatRequest {
   final String appId;
   final String uid; // 最大长度32	每个用户的id，用于区分不同用户
