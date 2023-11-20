@@ -14,18 +14,16 @@ class ChatPage extends GetView<ChatController> {
       children: [
         Flexible(
           flex: 3,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            // 带边框的 TextField
-            child: Obx(
-              () {
-                if (controller.state.displayAsMarkdown) {
-                  return _buildMarkdownOutput();
-                } else {
-                  return _buildOutput();
-                }
-              },
-            ),
+          child: Obx(
+            () {
+              if (controller.state.displayAsChat) {
+                // return _buildMarkdownOutput();
+                return _buildAsChatMessages();
+              } else {
+                return Container(
+                    padding: const EdgeInsets.all(10), child: _buildOutput());
+              }
+            },
           ),
         ),
         const Divider(height: 1),
@@ -49,24 +47,32 @@ class ChatPage extends GetView<ChatController> {
                     () => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(
-                        //   "Token Usage: ${controller.state.tokenUsage}",
-                        //   style:
-                        //       const TextStyle(color: Colors.grey, fontSize: 10),
-                        // ),
                         Row(
                           children: [
-                            const Text("Markdown"),
+                            const Text("Chat Mode"),
                             Switch(
-                              value: controller.state.displayAsMarkdown,
+                              value: controller.state.displayAsChat,
                               splashRadius: 15,
                               onChanged: (value) {
                                 HapticFeedback.mediumImpact();
-                                controller.state.displayAsMarkdown = value;
+                                controller.state.displayAsChat = value;
                               },
                             ),
                           ],
                         ),
+                        // Row(
+                        //   children: [
+                        //     const Text("Markdown"),
+                        //     Switch(
+                        //       value: controller.state.displayAsMarkdown,
+                        //       splashRadius: 15,
+                        //       onChanged: (value) {
+                        //         HapticFeedback.mediumImpact();
+                        //         controller.state.displayAsMarkdown = value;
+                        //       },
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -121,6 +127,21 @@ class ChatPage extends GetView<ChatController> {
     return Markdown(
       selectable: true,
       data: controller.state.outputContent,
+    );
+  }
+
+  Widget _buildAsChatMessages() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 20),
+      // controller: controller.messageOutputScrollController,
+      itemCount: controller.state.chatLength,
+      itemBuilder: (ctx, index) {
+        final message = controller.chatHistory.messages[index];
+        return ChatBubble(
+          role: message.role,
+          content: message.content,
+        );
+      },
     );
   }
 

@@ -24,3 +24,9 @@ APISECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ```bash
 flutter run
 ```
+
+## TODO
+
+- [ ] Chat History Local Storage
+- [ ] Custom Actions
+- [ ] One Step Mode

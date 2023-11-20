@@ -58,6 +58,11 @@ class ChatController extends GetxController {
     chatHistory.addMessages([
       Message(role: 'user', content: messageInputController.text),
     ]);
+    // FIXME 临时方案，后续优化
+    state.chatLength = chatHistory.messages.length;
+    if (state.displayAsChat) {
+      messageInputController.text = "";
+    }
     ChatRequest chatRequest = ChatRequest(
       appId: appId,
       domain: 'generalv3',
@@ -99,6 +104,8 @@ class ChatController extends GetxController {
         chatHistory.addMessages([
           Message(role: 'assistant', content: state.outputContent),
         ]);
+        // FIXME 临时方案，后续优化
+        state.chatLength = chatHistory.messages.length;
         typeWriter.inputFinished();
       },
       onError: (e) {
