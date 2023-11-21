@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:spark_chat/common/models/chat_model.dart';
 import 'package:spark_chat/common/index.dart';
+import 'package:spark_chat/common/utils/text_type_writer_helper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'index.dart';
@@ -28,18 +29,40 @@ class ChatController extends GetxController {
 
   ChatHistory chatHistory = ChatHistory.empty();
 
-  late final typeWriter = TypeWriter(
-      target: messageOutputController,
-      scrollController: messageOutputScrollController,
-      focusNode: messageOutputFocusNode,
-      speed: 50,
-      cursor: "_");
+  final chatViewScrollController = ScrollController();
+
+  double maxScrollExtentCache = 0;
+
+  late final inputTypeWriter = TextFieldTypeWriterHelper(
+    target: messageOutputController,
+    scrollController: messageOutputScrollController,
+    focusNode: messageOutputFocusNode,
+    speed: 50,
+    cursor: "_",
+  );
+
+  late final typeWriter = TextTypeWriterHelper(
+    onTextChanged: (value) {
+      state.typeWriterOutput = value;
+      _tryToScrollChatViewToBottom();
+    },
+    onFinished: (value) {
+      chatHistory.addMessages([
+        Message(role: 'assistant', content: value),
+      ]);
+      state.isTypeWriterRunning = false;
+      // FIXME 临时方案，后续优化
+      state.chatLength = chatHistory.messages.length;
+    },
+    speed: 50,
+    cursor: "_",
+  );
 
   // tap
   void handleSend() {
     HapticFeedback.mediumImpact();
     hideKeyboard();
-    if (typeWriter.isBusy) {
+    if (inputTypeWriter.isBusy) {
       Get.snackbar(
         "Error",
         "正在输入中，请稍后再试",
@@ -47,7 +70,10 @@ class ChatController extends GetxController {
       );
       return;
     }
+    inputTypeWriter.initTypeWriter();
     typeWriter.initTypeWriter();
+    state.isTypeWriterRunning = true;
+    state.typeWriterOutput = "";
     state.outputContent = "";
     startOutput();
   }
@@ -60,6 +86,9 @@ class ChatController extends GetxController {
     ]);
     // FIXME 临时方案，后续优化
     state.chatLength = chatHistory.messages.length;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tryToScrollChatViewToBottom();
+    });
     if (state.displayAsChat) {
       messageInputController.text = "";
     }
@@ -82,6 +111,7 @@ class ChatController extends GetxController {
       (event) {
         ChatResponse chatResponse = ChatResponse.fromJson(jsonDecode(event));
         if (chatResponse.header.code != 0) {
+          inputTypeWriter.addText(chatResponse.header.message);
           typeWriter.addText(chatResponse.header.message);
         } else if (chatResponse.payload != null) {
           String eachResponse = "";
@@ -89,6 +119,7 @@ class ChatController extends GetxController {
             debugPrint("Got message 📩: \n${e.content}");
             eachResponse += e.content;
           }
+          inputTypeWriter.addText(eachResponse);
           typeWriter.addText(eachResponse);
           state.outputContent += eachResponse;
           if (chatResponse.payload!.usage != null) {
@@ -101,15 +132,12 @@ class ChatController extends GetxController {
       onDone: () {
         debugPrint("🔌 Disconnected");
         ws.sink.close();
-        chatHistory.addMessages([
-          Message(role: 'assistant', content: state.outputContent),
-        ]);
-        // FIXME 临时方案，后续优化
-        state.chatLength = chatHistory.messages.length;
+        inputTypeWriter.inputFinished();
         typeWriter.inputFinished();
       },
       onError: (e) {
         debugPrint("Error: $e");
+        inputTypeWriter.addText("连接服务器失败，请检查网络或 APIKey。");
         typeWriter.addText("连接服务器失败，请检查网络或 APIKey。");
       },
     );
@@ -126,6 +154,23 @@ class ChatController extends GetxController {
   void copyToClipboard() {
     Clipboard.setData(ClipboardData(text: messageOutputController.text));
     HapticFeedback.mediumImpact();
+  }
+
+  /// 尝试滚动至底部
+  void _tryToScrollChatViewToBottom() {
+    if (!chatViewScrollController.hasClients) {
+      return;
+    }
+    final double kMaxScrollExtent =
+        chatViewScrollController.position.maxScrollExtent;
+    if (maxScrollExtentCache < kMaxScrollExtent) {
+      chatViewScrollController.animateTo(
+        kMaxScrollExtent,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
+    maxScrollExtentCache = kMaxScrollExtent;
   }
 
   /// 在 widget 内存中分配后立即调用。

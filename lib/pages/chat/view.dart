@@ -1,6 +1,6 @@
+// import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'index.dart';
 import 'widgets/widgets.dart';
@@ -123,25 +123,54 @@ class ChatPage extends GetView<ChatController> {
     );
   }
 
-  Widget _buildMarkdownOutput() {
-    return Markdown(
-      selectable: true,
-      data: controller.state.outputContent,
-    );
+  // Widget _buildMarkdownOutput() {
+  //   return Markdown(
+  //     selectable: true,
+  //     data: controller.state.outputContent,
+  //   );
+  // }
+
+  List<Widget> _buildChatHistory() {
+    List<Widget> chatHistory = [];
+    final messageLength = controller.state.chatLength;
+    for (int i = 0; i < messageLength; i++) {
+      final message = controller.chatHistory.messages[i];
+      chatHistory.add(
+        ChatBubble(
+          role: message.role,
+          content: message.content,
+        ),
+      );
+    }
+    return chatHistory;
+  }
+
+  Widget _buildOutputingMessage() {
+    return Obx(() {
+      if (controller.state.isTypeWriterRunning) {
+        return ChatBubble(
+          role: "assistant",
+          content: controller.state.typeWriterOutput,
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 
   Widget _buildAsChatMessages() {
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 20),
-      // controller: controller.messageOutputScrollController,
-      itemCount: controller.state.chatLength,
-      itemBuilder: (ctx, index) {
-        final message = controller.chatHistory.messages[index];
-        return ChatBubble(
-          role: message.role,
-          content: message.content,
-        );
-      },
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        controller: controller.chatViewScrollController,
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          children: [
+            ..._buildChatHistory(),
+            _buildOutputingMessage(),
+          ],
+        ),
+      ),
     );
   }
 

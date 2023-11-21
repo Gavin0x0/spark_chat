@@ -2,29 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-/// 打字机效果助手
-class TypeWriter {
-  /// 目标文本框
-  final TextEditingController _target;
-
-  /// 目标文件框滚动控制器
-  final ScrollController _scrollController;
-
-  /// 目标文件框焦点
-  final FocusNode _focusNode;
-
+/// 普通文本打字机效果助手
+class TextTypeWriterHelper {
   /// 打字速度 1-1000
   final int _speed;
 
   /// 光标字符
   final String _cursor;
 
-  /// 当前文本框是否被聚焦
-  bool get _isFocused => _focusNode.hasFocus;
+  /// 显示输入光标
+  bool _isShowCursor = true;
 
-  /// 当前是否存在选择区域
-  bool get _hasSelection =>
-      _target.selection.baseOffset != _target.selection.extentOffset;
+  /// 文本变化回调
+  final ValueChanged<String>? _onTextChanged;
+
+  /// 输出结束事件
+  final ValueChanged<String>? _onFinished;
 
   /// 当前打字机状态
   TypeWriterStatus _status = TypeWriterStatus.finish;
@@ -44,9 +37,6 @@ class TypeWriter {
   /// 等待中光标动画定时器
   Timer _cursorBlinkTimer = Timer(Duration.zero, () {});
 
-  /// 可滚动高度缓存
-  double _maxScrollExtentCache = 0;
-
   bool get isBusy => _status != TypeWriterStatus.finish;
 
   bool get _isRunning => _status == TypeWriterStatus.running;
@@ -55,17 +45,15 @@ class TypeWriter {
 
   bool _gotTheLastChar = false;
 
-  TypeWriter({
-    required TextEditingController target,
-    required ScrollController scrollController,
-    required FocusNode focusNode,
+  TextTypeWriterHelper({
+    required ValueChanged<String>? onTextChanged,
+    required ValueChanged<String>? onFinished,
     String cursor = "|",
     int speed = 1,
   })  : _cursor = cursor,
         _speed = speed,
-        _target = target,
-        _scrollController = scrollController,
-        _focusNode = focusNode,
+        _onTextChanged = onTextChanged,
+        _onFinished = onFinished,
         assert(speed >= 1 && speed <= 1000, "Speed must between 1-1000");
 
   void initTypeWriter() {
@@ -114,6 +102,7 @@ class TypeWriter {
   }
 
   void _turnToFinish() {
+    _onFinished?.call(_text);
     _typeWriterTimer.cancel();
     _cursorBlinkTimer.cancel();
     if (FocusManager.instance.primaryFocus != null) {
@@ -124,7 +113,6 @@ class TypeWriter {
     _text = "";
     _displayedText = "";
     _undisplayedText = "";
-    _maxScrollExtentCache = 0;
   }
 
   void _typeOneChar() {
@@ -140,10 +128,10 @@ class TypeWriter {
       }
       _displayedText += String.fromCharCode(char);
     }
-    if (_isFocused) {
-      _setTargetText(_displayedText);
-    } else {
+    if (_isShowCursor) {
       _setTargetText(_displayedText + _cursor);
+    } else {
+      _setTargetText(_displayedText);
     }
     if (_nothingToType) {
       if (_gotTheLastChar) {
@@ -154,75 +142,19 @@ class TypeWriter {
     }
   }
 
-  /// 滚动至底部
-  void _scrollToBottom() {
-    if (_isFocused) {
-      return;
-    }
-    if (!_scrollController.hasClients) {
-      return;
-    }
-    final double kMaxScrollExtent = _scrollController.position.maxScrollExtent;
-    if (_maxScrollExtentCache < kMaxScrollExtent) {
-      _scrollController.animateTo(
-        kMaxScrollExtent,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-      );
-    }
-    _maxScrollExtentCache = kMaxScrollExtent;
-  }
-
   // 闪烁光标
   void _cursorBlink() {
-    if (_isFocused && !_hasSelection) {
-      return;
-    }
-    if (_target.text.endsWith(_cursor)) {
+    if (_isShowCursor) {
+      _isShowCursor = false;
       _setTargetText(_displayedText);
     } else {
+      _isShowCursor = true;
       _setTargetText(_displayedText + _cursor);
     }
   }
 
   void _setTargetText(String text) {
-    if (_hasSelection) {
-      MapEntry<int, int> selectionPos;
-      selectionPos = _saveSelection();
-      _target.text = text;
-      // 还原选中区域
-      _restoreSelection(selectionPos.key, selectionPos.value);
-    } else {
-      if (_isFocused) {
-        _target.value = TextEditingValue(
-          text: text,
-          selection: TextSelection.fromPosition(
-            TextPosition(offset: text.length),
-          ),
-        );
-      } else {
-        _target.text = text;
-        _scrollToBottom();
-      }
-    }
-  }
-
-  /// 缓存选中的区域
-  MapEntry<int, int> _saveSelection() {
-    return MapEntry(
-        _target.selection.baseOffset, _target.selection.extentOffset);
-  }
-
-  /// 选中区域保持不变
-  void _restoreSelection(int baseOffset, int extentOffset) {
-    try {
-      _target.selection = TextSelection(
-        baseOffset: baseOffset,
-        extentOffset: extentOffset,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    _onTextChanged?.call(text);
   }
 }
 

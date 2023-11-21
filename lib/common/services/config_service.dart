@@ -25,7 +25,7 @@ class ConfigService extends GetxService {
   String get apiSecretOrLocal =>
       _apiSecret.isNotEmpty ? _apiSecret : _localApiSecret;
 
-  String _userId = "";
+  String _userId = "guest";
   String get userId => _userId;
 
   ThemeMode _themeMode = ThemeMode.system;
@@ -40,7 +40,11 @@ class ConfigService extends GetxService {
   /// 服务初始化
   Future<void> init() async {
     await _loadDevEnvConfig();
-    await _loadLocalConfig();
+    try {
+      await _loadLocalConfig();
+    } catch (e) {
+      Log.e(e);
+    }
   }
 
   Future<void> _loadDevEnvConfig() async {
@@ -58,7 +62,7 @@ class ConfigService extends GetxService {
     String? localApiKey = _localConfigBox.get('apiKey');
     String? localApiSecret = _localConfigBox.get('apiSecret');
     bool? localUseMaterial3 = _localConfigBox.get('useMaterial3');
-    bool? localDarkMode = _localConfigBox.get('darkMode');
+    ThemeMode? localDarkMode = indexToDarkMode(_localConfigBox.get('darkMode'));
     if (localUserId.isNotNullOrEmpty) {
       Log.i("缓存了用户ID： $localUserId");
       _userId = localUserId!;
@@ -85,14 +89,14 @@ class ConfigService extends GetxService {
     }
     if (localDarkMode != null) {
       Log.i("缓存了darkMode： $localDarkMode");
-      _themeMode = localDarkMode ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = localDarkMode;
       Get.changeThemeMode(_themeMode);
     }
   }
 
   void setThemeMode(ThemeMode themeMode) {
     _themeMode = themeMode;
-    _localConfigBox.put('darkMode', themeMode == ThemeMode.dark);
+    _localConfigBox.put('darkMode', darkModeToIndex(themeMode));
     Get.changeThemeMode(themeMode);
   }
 
@@ -119,6 +123,30 @@ class ConfigService extends GetxService {
   void setApiSecret(String apiSecret) {
     _apiSecret = apiSecret;
     _localConfigBox.put('apiSecret', apiSecret);
+  }
+
+  int darkModeToIndex(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.system:
+        return 0;
+      case ThemeMode.light:
+        return 1;
+      case ThemeMode.dark:
+        return 2;
+    }
+  }
+
+  ThemeMode? indexToDarkMode(int? index) {
+    switch (index) {
+      case 0:
+        return ThemeMode.system;
+      case 1:
+        return ThemeMode.light;
+      case 2:
+        return ThemeMode.dark;
+      default:
+        return null;
+    }
   }
 
   /// 服务销毁

@@ -12,26 +12,32 @@ class Log {
     ),
   );
 
+  // Level Debug
   static void d(dynamic message) {
     _logger.d(message);
   }
 
+  // Level Error
   static void e(dynamic message) {
     _logger.e(message);
   }
 
+  // Level Info
   static void i(dynamic message) {
     _logger.i(message);
   }
 
+  // Level Warning
   static void w(dynamic message) {
     _logger.w(message);
   }
 
+  // Level Trace
   static void t(dynamic message) {
     _logger.t(message);
   }
 
+  // Level Fatal
   static void f(dynamic message) {
     _logger.f(message);
   }

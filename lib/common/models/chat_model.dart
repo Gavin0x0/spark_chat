@@ -1,3 +1,5 @@
+import 'package:spark_chat/common/index.dart';
+
 class ChatHistory {
   final String name;
   final DateTime createTime;
@@ -26,7 +28,7 @@ class ChatHistory {
     for (var message in messages) {
       tokens += message.content.length;
     }
-    print('tokens: $tokens');
+    Log.i('tokens: $tokens');
   }
 }
 

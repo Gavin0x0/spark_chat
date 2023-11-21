@@ -30,4 +30,14 @@ class ChatState {
   final _isDrawerOpening = false.obs;
   set isDrawerOpening(bool value) => _isDrawerOpening.value = value;
   bool get isDrawerOpening => _isDrawerOpening.value;
+
+  // 是否正在输出中
+  final _isTypeWriterRunning = false.obs;
+  set isTypeWriterRunning(bool value) => _isTypeWriterRunning.value = value;
+  bool get isTypeWriterRunning => _isTypeWriterRunning.value;
+
+  // 打字机效果正在输出中的消息
+  final _typeWriterOutput = "".obs;
+  set typeWriterOutput(String value) => _typeWriterOutput.value = value;
+  String get typeWriterOutput => _typeWriterOutput.value;
 }

@@ -207,21 +207,21 @@ class SettingDrawer extends GetView<ChatController> {
     );
   }
 
-  Widget _buildKeepKeyboardOnMobile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text("TODO:发送后不收起键盘"),
-        Switch(
-          value: false,
-          onChanged: (value) {
-            HapticFeedback.mediumImpact();
-            // ConfigService.ins.setMaterial3(value);
-          },
-        ),
-      ],
-    );
-  }
+  // Widget _buildKeepKeyboardOnMobile() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       const Text("TODO:发送后不收起键盘"),
+  //       Switch(
+  //         value: false,
+  //         onChanged: (value) {
+  //           HapticFeedback.mediumImpact();
+  //           // ConfigService.ins.setMaterial3(value);
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   String _getDarkModeLabel(ThemeMode themeMode) {
     switch (themeMode) {
