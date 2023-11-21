@@ -25,6 +25,21 @@ APISECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 flutter run
 ```
 
+## 4. 打包
+
+- 生成 icons
+
+```bash
+cd ./macos/Runner/Assets.xcassets
+iconutil -c icns AppIcon.iconset -o IconName.icns
+```
+
+- build dmg  
+  
+```bash
+appdmg ./Installers/dmg_creator/config.json ./Installers/dmg_creator/spark_chat.dmg
+```
+
 ## TODO
 
 - [ ] Chat History Local Storage
