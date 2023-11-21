@@ -46,6 +46,7 @@ class ChatPage extends GetView<ChatController> {
                   child: Obx(
                     () => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Row(
                           children: [
@@ -96,7 +97,7 @@ class ChatPage extends GetView<ChatController> {
           child: Obx(() => Scaffold(
                 key: controller.scaffoldKey,
                 appBar: AppBar(
-                  title: const Text("Spark Chat"),
+                  title: const Text("Chat"),
                   actions: [
                     _buildSettingIconBtn(context),
                   ],

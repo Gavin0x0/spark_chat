@@ -21,135 +21,140 @@ class SettingDrawer extends GetView<ChatController> {
     );
     return Drawer(
       child: SafeArea(
-        child: Column(
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 10),
           children: [
-            // _buildHeadBar(),
-            Container(
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              children: [
+                // _buildHeadBar(),
+                Container(
+                  margin: const EdgeInsets.only(left: 10, right: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "接口配置",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              /// TODO 抽取到 controller 中
+                              appIdController.text = "";
+                              apiKeyController.text = "";
+                              apiSecretController.text = "";
+                              ConfigService.ins.setAppId("");
+                              ConfigService.ins.setApiKey("");
+                              ConfigService.ins.setApiSecret("");
+                            },
+                            icon: const Icon(Icons.refresh),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: appIdController,
+                        decoration: const InputDecoration(
+                          labelText: "APP ID",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          ConfigService.ins.setAppId(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: apiKeyController,
+                        decoration: const InputDecoration(
+                          labelText: "API KEY",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          ConfigService.ins.setApiKey(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: apiSecretController,
+                        decoration: const InputDecoration(
+                          labelText: "API SECRET",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          ConfigService.ins.setApiSecret(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       const Text(
-                        "接口配置",
+                        "用户配置",
                         style: TextStyle(fontSize: 18),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          /// TODO 抽取到 controller 中
-                          appIdController.text = "";
-                          apiKeyController.text = "";
-                          apiSecretController.text = "";
-                          ConfigService.ins.setAppId("");
-                          ConfigService.ins.setApiKey("");
-                          ConfigService.ins.setApiSecret("");
-                        },
-                        icon: const Icon(Icons.refresh),
+                      const SizedBox(
+                        height: 10,
                       ),
+                      TextField(
+                        controller: TextEditingController(
+                          text: ConfigService.ins.userId,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: "User ID",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          ConfigService.ins.setUserId(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "通用配置",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildDarkModeMenu(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildMaterialVersion(),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // _buildKeepKeyboardOnMobile(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "用量统计",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildCountText("请求次数：", "TODO"),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildCountText("Tokens 用量：", "TODO"),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: appIdController,
-                    decoration: const InputDecoration(
-                      labelText: "APP ID",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      ConfigService.ins.setAppId(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: apiKeyController,
-                    decoration: const InputDecoration(
-                      labelText: "API KEY",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      ConfigService.ins.setApiKey(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: apiSecretController,
-                    decoration: const InputDecoration(
-                      labelText: "API SECRET",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      ConfigService.ins.setApiSecret(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "用户配置",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: TextEditingController(
-                      text: ConfigService.ins.userId,
-                    ),
-                    decoration: const InputDecoration(
-                      labelText: "User ID",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      ConfigService.ins.setUserId(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "通用配置",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildDarkModeMenu(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildMaterialVersion(),
-                  // const SizedBox(
-                  //   height: 10,
-                  // ),
-                  // _buildKeepKeyboardOnMobile(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "用量统计",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildCountText("请求次数：", "TODO"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildCountText("Tokens 用量：", "TODO"),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

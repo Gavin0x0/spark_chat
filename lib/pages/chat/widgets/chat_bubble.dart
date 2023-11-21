@@ -23,7 +23,7 @@ class ChatBubble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        margin: const EdgeInsets.only(top: 10, right: 10),
+        margin: const EdgeInsets.only(top: 10, right: 10, left: 20),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: Colors.blue,
@@ -44,7 +44,7 @@ class ChatBubble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.only(top: 10, left: 10),
+        margin: const EdgeInsets.only(top: 10, left: 10, right: 20),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: Colors.grey[200],
