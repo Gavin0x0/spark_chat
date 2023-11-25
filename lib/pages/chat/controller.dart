@@ -47,9 +47,9 @@ class ChatController extends GetxController {
       _tryToScrollChatViewToBottom();
     },
     onFinished: (value) {
-      chatHistory.addMessages([
+      chatHistory.addMessage(
         Message(role: 'assistant', content: value),
-      ]);
+      );
       state.isTypeWriterRunning = false;
       // FIXME 临时方案，后续优化
       state.chatLength = chatHistory.messages.length;
@@ -58,7 +58,7 @@ class ChatController extends GetxController {
     cursor: "_",
   );
 
-  // tap
+  // 触发发送事件
   void handleSend() {
     HapticFeedback.mediumImpact();
     hideKeyboard();
@@ -81,9 +81,9 @@ class ChatController extends GetxController {
   /// 开始输出
   void startOutput() {
     String appId = ConfigService.ins.appIdOrLocal;
-    chatHistory.addMessages([
+    chatHistory.addMessage(
       Message(role: 'user', content: messageInputController.text),
-    ]);
+    );
     // FIXME 临时方案，后续优化
     state.chatLength = chatHistory.messages.length;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -96,9 +96,10 @@ class ChatController extends GetxController {
       appId: appId,
       domain: 'generalv3',
       uid: ConfigService.ins.userId,
-      messages: chatHistory.messages,
+      messages: chatHistory.nomalMessages,
     );
     String jsonStr = jsonEncode(chatRequest.toJson());
+
     debugPrint("Send message 📤: \n$jsonStr");
 
     String path = '/v3.1/chat';
@@ -111,6 +112,8 @@ class ChatController extends GetxController {
       (event) {
         ChatResponse chatResponse = ChatResponse.fromJson(jsonDecode(event));
         if (chatResponse.header.code != 0) {
+          // print("发生报错，此时应该 setErrorFlag");
+          chatHistory.setErrorFlag();
           inputTypeWriter.addText(chatResponse.header.message);
           typeWriter.addText(chatResponse.header.message);
         } else if (chatResponse.payload != null) {
@@ -145,8 +148,10 @@ class ChatController extends GetxController {
 
   /// 隐藏键盘
   void hideKeyboard() {
-    if (FocusManager.instance.primaryFocus != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
+    if (PlatformInfo.isAppOS()) {
+      if (FocusManager.instance.primaryFocus != null) {
+        FocusManager.instance.primaryFocus!.unfocus();
+      }
     }
   }
 

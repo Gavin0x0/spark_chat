@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'index.dart';
+
 /// 普通文本打字机效果助手
 class TextTypeWriterHelper {
   /// 打字速度 1-1000
@@ -105,8 +107,10 @@ class TextTypeWriterHelper {
     _onFinished?.call(_text);
     _typeWriterTimer.cancel();
     _cursorBlinkTimer.cancel();
-    if (FocusManager.instance.primaryFocus != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
+    if (PlatformInfo.isAppOS()) {
+      if (FocusManager.instance.primaryFocus != null) {
+        FocusManager.instance.primaryFocus!.unfocus();
+      }
     }
     _status = TypeWriterStatus.finish;
     _setTargetText(_text);

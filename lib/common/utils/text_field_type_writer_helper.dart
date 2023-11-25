@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'index.dart';
+
 /// 输入框打字机效果助手
 class TextFieldTypeWriterHelper {
   /// 目标文本框
@@ -116,8 +118,10 @@ class TextFieldTypeWriterHelper {
   void _turnToFinish() {
     _typeWriterTimer.cancel();
     _cursorBlinkTimer.cancel();
-    if (FocusManager.instance.primaryFocus != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
+    if (PlatformInfo.isAppOS()) {
+      if (FocusManager.instance.primaryFocus != null) {
+        FocusManager.instance.primaryFocus!.unfocus();
+      }
     }
     _status = TypeWriterStatus.finish;
     _setTargetText(_text);

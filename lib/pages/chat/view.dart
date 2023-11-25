@@ -193,14 +193,22 @@ class ChatPage extends GetView<ChatController> {
   }
 
   Widget _buildInput() {
-    return TextField(
-      autofocus: false,
-      controller: controller.messageInputController,
-      focusNode: controller.messageInputFocusNode,
-      maxLines: 100,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Input",
+    /// command + enter 触发消息发送
+    return CallbackShortcuts(
+      bindings: {
+        LogicalKeySet(LogicalKeyboardKey.enter, LogicalKeyboardKey.meta): () {
+          controller.handleSend();
+        },
+      },
+      child: TextField(
+        autofocus: false,
+        controller: controller.messageInputController,
+        focusNode: controller.messageInputFocusNode,
+        maxLines: 100,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Input",
+        ),
       ),
     );
   }

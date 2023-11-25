@@ -19,8 +19,24 @@ class ChatHistory {
 
   bool get isEmpty => messages.isEmpty;
 
-  void addMessages(List<Message> messages) {
-    this.messages.addAll(messages);
+  bool kAnswerIsError = false;
+
+  void addMessages(List<Message> newMessages) {
+    messages.addAll(newMessages);
+  }
+
+  void addMessage(Message message) {
+    if (kAnswerIsError) {
+      message.setError();
+      kAnswerIsError = false;
+    }
+    messages.add(message);
+  }
+
+  /// 将当前消息以及下一条回答标记为 error
+  void setErrorFlag() {
+    messages.last.setError();
+    kAnswerIsError = true;
   }
 
   void countTokens() {
@@ -30,6 +46,11 @@ class ChatHistory {
     }
     Log.i('tokens: $tokens');
   }
+
+  // 获取正常消息
+  List<Message> get nomalMessages => messages
+      .where((element) => element.status == MessageStatus.normal)
+      .toList();
 }
 
 class ChatRequest {
@@ -81,11 +102,25 @@ class ChatRequest {
 class Message {
   final String role; // 取值为 [user,assistant]
   final String content; // 所有content的累计tokens需控制8192以内
+  MessageStatus status;
 
-  Message({required this.role, required this.content})
-      : assert(content.length <= 8192),
+  void setError() {
+    status = MessageStatus.error;
+  }
+
+  Message({
+    required this.role,
+    required this.content,
+    this.status = MessageStatus.normal,
+  })  : assert(content.length <= 8192),
         assert(role == 'user' || role == 'assistant',
             'role 取值必须为 [user,assistant]');
+}
+
+// 消息状态：正常、异常
+enum MessageStatus {
+  normal,
+  error,
 }
 
 class ChatResponse {

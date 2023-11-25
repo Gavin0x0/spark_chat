@@ -44,7 +44,6 @@ class SettingDrawer extends GetView<ChatController> {
                           ),
                           IconButton(
                             onPressed: () {
-                              /// TODO 抽取到 controller 中
                               appIdController.text = "";
                               apiKeyController.text = "";
                               apiSecretController.text = "";
