@@ -31,7 +31,7 @@ flutter run
 
 ```bash
 cd ./macos/Runner/Assets.xcassets
-iconutil -c icns AppIcon.iconset -o IconName.icns
+iconutil -c icns AppIcon.iconset -o app_icon.icns
 ```
 
 - build dmg  

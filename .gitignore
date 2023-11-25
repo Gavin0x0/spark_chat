@@ -45,3 +45,4 @@ app.*.map.json
 
 # env
 .env
+Installers/dmg_creator/spark_chat.dmg
