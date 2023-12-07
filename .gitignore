@@ -46,3 +46,6 @@ app.*.map.json
 # env
 .env
 Installers/dmg_creator/spark_chat.dmg
+
+# fvm
+.fvm/flutter_sdk

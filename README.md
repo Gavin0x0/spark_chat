@@ -2,10 +2,16 @@
 
 适用于讯飞星火大模型 V3.0 的跨平台客户端
 
+## 0. 使用 fvm 配置 flutter 版本
+
+```bash
+fvm install
+```
+
 ## 1. 安装依赖
 
 ```bash
-flutter pub get
+fvm flutter pub get
 ```
 
 ## 2. 配置密钥
@@ -22,7 +28,7 @@ APISECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ## 3. 运行
 
 ```bash
-flutter run
+fvm flutter run
 ```
 
 ## 4. 打包
