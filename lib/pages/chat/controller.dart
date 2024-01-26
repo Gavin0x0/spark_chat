@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:spark_chat/common/models/chat_model.dart';
 import 'package:spark_chat/common/index.dart';
 import 'package:spark_chat/common/utils/text_type_writer_helper.dart';
@@ -63,11 +64,13 @@ class ChatController extends GetxController {
     HapticFeedback.mediumImpact();
     hideKeyboard();
     if (inputTypeWriter.isBusy) {
-      Get.snackbar(
-        "Error",
-        "正在输入中，请稍后再试",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "正在输入中，请稍后再试",
+      //   snackPosition: SnackPosition.BOTTOM,
+      // );
+      showToast('正在输入中，请稍后再试');
+      // Get.tip
       return;
     }
     inputTypeWriter.initTypeWriter();

@@ -22,6 +22,7 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.18.1
   logger: ^2.0.2+1
+  oktoast: ^3.4.0
   web_socket_channel: ^2.4.0
   window_manager: ^0.3.7
 
