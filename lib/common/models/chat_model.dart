@@ -1,4 +1,4 @@
-import 'package:spark_chat/common/index.dart';
+import 'package:fast_menu/common/index.dart';
 
 class ChatHistory {
   final String name;

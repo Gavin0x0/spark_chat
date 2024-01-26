@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spark_chat/common/routers/index.dart';
+import 'package:fast_menu/common/routers/index.dart';
 import 'index.dart';
 
 class HomePage extends GetView<HomeController> {

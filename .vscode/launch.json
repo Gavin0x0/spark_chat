@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "spark_chat",
+            "name": "fast_menu",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "spark_chat (profile mode)",
+            "name": "fast_menu (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "spark_chat (release mode)",
+            "name": "fast_menu (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

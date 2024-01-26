@@ -1,4 +1,4 @@
-package com.example.spark_chat
+package com.example.fast_menu
 
 import io.flutter.embedding.android.FlutterActivity
 

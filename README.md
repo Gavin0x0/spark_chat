@@ -1,4 +1,4 @@
-# spark_chat
+# fast_menu
 
 适用于讯飞星火大模型 V3.0 的跨平台客户端
 
@@ -43,7 +43,7 @@ iconutil -c icns AppIcon.iconset -o app_icon.icns
 - build dmg  
   
 ```bash
-appdmg ./Installers/dmg_creator/config.json ./Installers/dmg_creator/spark_chat.dmg
+appdmg ./Installers/dmg_creator/config.json ./Installers/dmg_creator/fast_menu.dmg
 ```
 
 ## TODO

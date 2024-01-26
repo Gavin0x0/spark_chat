@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:spark_chat/common/models/chat_model.dart';
-import 'package:spark_chat/common/index.dart';
-import 'package:spark_chat/common/utils/text_type_writer_helper.dart';
+import 'package:fast_menu/common/models/chat_model.dart';
+import 'package:fast_menu/common/index.dart';
+import 'package:fast_menu/common/utils/text_type_writer_helper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'index.dart';

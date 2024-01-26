@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:spark_chat/common/index.dart';
+import 'package:fast_menu/common/index.dart';
 
 class ConfigService extends GetxService {
   static ConfigService get ins => Get.find<ConfigService>();

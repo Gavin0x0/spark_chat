@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:spark_chat/common/index.dart';
+import 'package:fast_menu/common/index.dart';
 
 import '../index.dart';
 

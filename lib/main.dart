@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:spark_chat/common/index.dart';
+import 'package:fast_menu/common/index.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
 import 'app.dart';

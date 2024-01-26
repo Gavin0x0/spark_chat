@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:spark_chat/pages/index.dart';
+import 'package:fast_menu/pages/index.dart';
 import 'index.dart';
 
 class RoutePages {

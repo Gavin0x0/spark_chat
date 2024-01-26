@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
-import 'package:spark_chat/common/index.dart';
+import 'package:fast_menu/common/index.dart';
 
 class AuthUtil {
   static const String host = 'spark-api.xf-yun.com';

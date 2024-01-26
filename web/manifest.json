@@ -1,6 +1,6 @@
 {
-    "name": "spark_chat",
-    "short_name": "spark_chat",
+    "name": "fast_menu",
+    "short_name": "fast_menu",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
